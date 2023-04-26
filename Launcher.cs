@@ -93,6 +93,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.LoadLevel(1);
     }
 
@@ -104,6 +105,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
+        if (info.PlayerCount == info.MaxPlayers)
+        {
+            return;
+        }
+
         PhotonNetwork.JoinRoom(info.Name);
         MenuManager.Instance.OpenMenu("Loading");
     }
@@ -123,9 +129,9 @@ public class Launcher : MonoBehaviourPunCallbacks
         for (int i=0; i<roomList.Count; i++)
         {
             RoomInfo info = roomList[i];
-            if (info.RemovedFromList)
+            if (info.RemovedFromList || !info.IsOpen)
                 {
-                cachedRoomList.Remove(info.Name);
+                    cachedRoomList.Remove(info.Name);
                 }
             else
                 {

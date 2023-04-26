@@ -12,8 +12,6 @@ public class ItemWorldSpawner : MonoBehaviour
 
     private void Start()
     {
-
-
         if (PhotonNetwork.IsMasterClient)
         {
             GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "pfItemWorld"), transform.position, Quaternion.identity);

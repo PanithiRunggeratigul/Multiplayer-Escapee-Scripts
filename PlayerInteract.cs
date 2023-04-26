@@ -14,7 +14,6 @@ public class PlayerInteract : MonoBehaviour
     private DisplayDescription description;
     private Inventory inventory;
     [SerializeField] UI_Inventory uiinventory;
-    // [SerializeField] PhotonView PV;
 
     private void Start()
     {
@@ -42,7 +41,6 @@ public class PlayerInteract : MonoBehaviour
                         {
                             int viewID = hitinfo.collider.GetComponent<PhotonView>().ViewID;
                             inventory.addItem(itemWorld.GetItem());
-                            // itemWorld.RemoveItem();
                             interactObj.Interact(viewID);
                         }
                     }

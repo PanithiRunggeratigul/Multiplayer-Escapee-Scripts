@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class InteractTest : MonoBehaviour, IInteractable
+public class InteractTest : MonoBehaviourPun, IInteractable
 {
     [SerializeField] PhotonView PV;
 
