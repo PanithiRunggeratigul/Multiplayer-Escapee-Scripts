@@ -6,7 +6,7 @@ using System.IO;
 
 public class ItemWorldSpawner : MonoBehaviour
 {
-    public Items item;
+    public Item item;
     [SerializeField] PhotonView PV;
     private SpriteRenderer spriteRenderer;
 

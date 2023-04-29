@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+interface ICapturable
+{
+    public void Captured();
+}
+
 public class EnemyController : MonoBehaviour
 {
     public NavMeshAgent agent;
@@ -61,23 +66,7 @@ public class EnemyController : MonoBehaviour
     {
         agent.SetDestination(player.position);
     }
-    private void AttackPlayer()
-    {
-        agent.SetDestination(transform.position);
 
-        transform.LookAt(player);
-
-        if (!alreadyAttacked)
-        {
-            //Rigidbody rb = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            
-            //rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
-            //rb.AddForce(transform.up * 8f, ForceMode.Impulse);
-
-            //alreadyAttacked = true;
-            //Invoke(nameof(ResetAttack), timeBetweenAttacks);
-        }
-    }
     private void ResetAttack()
     {
         alreadyAttacked = false;
@@ -99,9 +88,15 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, Player);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, Player);
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange, Player);
+        foreach (Collider hitCollider in hitColliders)
+        {
+            hitCollider.gameObject.GetComponentInChildren<ICapturable>()?.Captured();
+        }
 
         if (!playerInAttackRange && !playerInSightRange)
         {
@@ -113,7 +108,7 @@ public class EnemyController : MonoBehaviour
         }
         if (playerInAttackRange && playerInSightRange)
         {
-            AttackPlayer();
+            // Debug.Log("captured");
         }
     }
 }

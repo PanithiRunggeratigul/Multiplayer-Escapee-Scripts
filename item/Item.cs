@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Items
+public class Item
 {
     public enum ItemType
     {

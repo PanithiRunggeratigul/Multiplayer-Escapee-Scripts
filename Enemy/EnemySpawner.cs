@@ -12,12 +12,17 @@ public class EnemySpawner : MonoBehaviour
     {
         if (PV.IsMine)
         {
-            CreateController();
+            InvokeRepeating("CreateController", 10, 60);
         }
+    }
+
+    private void Update()
+    {
+   
     }
 
     void CreateController()
     {
-        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "EnemyAI"), Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "EnemyAI"), transform.position, Quaternion.identity);
     }
 }

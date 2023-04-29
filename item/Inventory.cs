@@ -5,24 +5,24 @@ using UnityEngine;
 
 public class Inventory
 {
-    private List<Items> itemList;
+    private List<Item> itemList;
     public event EventHandler OnItemListChanged;
 
     public Inventory()
     {
-        itemList = new List<Items>();
+        itemList = new List<Item>();
 
         //addItem(new Items { itemType = Items.ItemType.dude, amount = 1 });
         //addItem(new Items { itemType = Items.ItemType.white, amount = 1 });
     }
 
-    public void addItem(Items item)
+    public void addItem(Item item)
     {
         itemList.Add(item);
         OnItemListChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public List<Items> GetItemsList()
+    public List<Item> GetItemsList()
     {
         return itemList;
     }

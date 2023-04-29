@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ICapturable
 {
     [SerializeField] float moveSpeed, ground_drag, jumpForce, jumpCooldown, airMultiplier;
     bool readyToJump;
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask Ground;
     bool grounded;
 
-    [Header("Inventory")]
+    // [Header("Inventory")]
     // private Inventory inventory;
     // [SerializeField] UI_Inventory uiinventory;
 
@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     Vector3 moveDirection;
 
+    PlayerManager playerManager;
+
     Rigidbody rb;
     PhotonView PV;
 
@@ -49,6 +51,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         PV = GetComponent<PhotonView>();
+
+        playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
     }
 
     // Start is called before the first frame update
@@ -61,6 +65,10 @@ public class PlayerController : MonoBehaviour
         else if (!PV.IsMine)
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
+            if (GetComponent<Camera>() != null)
+            {
+                Destroy(GetComponent<Camera>().gameObject);
+            }
             Destroy(rb);
             Destroy(ui);
         }
@@ -225,5 +233,10 @@ public class PlayerController : MonoBehaviour
             return;
         }
         MovePlayer();
+    }
+
+    public void Captured()
+    {
+        playerManager.Die();
     }
 }

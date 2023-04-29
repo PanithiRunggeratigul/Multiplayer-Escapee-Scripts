@@ -10,8 +10,12 @@ public class UI_Inventory : MonoBehaviour
     private Transform itemSlotContainer;
     private Transform itemSlotTemplate;
 
+    [SerializeField] GameObject selected1;
+    [SerializeField] GameObject selected2;
+
     private void Awake()
     {
+        selected1.SetActive(true);
         itemSlotContainer = transform.Find("itemSlotContainer");
         itemSlotTemplate = itemSlotContainer.Find("itemSlotTemplate");
     }
@@ -45,7 +49,7 @@ public class UI_Inventory : MonoBehaviour
 
         float itemSlotCellSize = 185f;
 
-        foreach (Items item in inventory.GetItemsList())
+        foreach (Item item in inventory.GetItemsList())
         {
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
             itemSlotRectTransform.gameObject.SetActive(true);
@@ -55,6 +59,20 @@ public class UI_Inventory : MonoBehaviour
             // Debug.Log(item.itemType);
             image.sprite = item.GetSprite();
             x++;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            selected1.SetActive(true);
+            selected2.SetActive(false);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selected2.SetActive(true);
+            selected1.SetActive(false);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.IO;
 
 public class ItemWorld : MonoBehaviour
 {
-    public Items item;
+    public Item item;
     //private SpriteRenderer spriteRenderer;
 
 
@@ -31,7 +31,7 @@ public class ItemWorld : MonoBehaviour
     //    spriteRenderer.sprite = item.GetSprite();
     //}
 
-    public Items GetItem()
+    public Item GetItem()
     {
         return item;
     }

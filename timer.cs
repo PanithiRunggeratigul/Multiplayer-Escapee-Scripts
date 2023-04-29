@@ -5,15 +5,18 @@ using TMPro;
 
 public class timer : MonoBehaviour
 {
-    public float timeLeft;
-    public bool timerOn = false;
+    float timeLeft;
+
+    bool ReadyTimerOn = false;
+    bool GameTimerOn = false;
 
     public TextMeshProUGUI time;
 
     // Start is called before the first frame update
     void Start()
     {
-        timerOn = true;
+        ReadyTimerOn = true;
+        SetStartTimer();
     }
 
     void updateTimer(float currentTime)
@@ -25,11 +28,36 @@ public class timer : MonoBehaviour
 
         time.text = string.Format("{0:00} : {1:00}", minutes, seconds);
     }
+
+    void SetStartTimer()
+    {
+        timeLeft = 10;
+    }
+
+    void SetGameTimer()
+    {
+        timeLeft = 300;
+    }
     
     // Update is called once per frame
     void Update()
     {
-        if (timerOn)
+        if (ReadyTimerOn)
+        {
+            if (timeLeft > 0)
+            {
+                timeLeft -= Time.deltaTime;
+                updateTimer(timeLeft);
+            }
+            else if (timeLeft <= 0)
+            {
+                SetGameTimer();
+                ReadyTimerOn = false;
+                GameTimerOn = true;
+            }
+        }
+
+        if (GameTimerOn)
         {
             if (timeLeft > 0)
             {
@@ -38,9 +66,7 @@ public class timer : MonoBehaviour
             }
             else
             {
-                timeLeft = 0;
-                timerOn = false;
-                // UnityEditor.EditorApplication.isPlaying = false;
+                GameTimerOn = false;
                 Application.Quit();
             }
         }
