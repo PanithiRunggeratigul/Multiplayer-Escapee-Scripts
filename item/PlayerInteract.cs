@@ -12,13 +12,13 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] float interactDistance;
     [SerializeField] LayerMask item;
     private DisplayDescription description;
-    private Inventory inventory;
-    [SerializeField] UI_Inventory uiinventory;
+    // private Inventory inventory;
+    [SerializeField] InventoryManager inventoryManager;
 
     private void Start()
     {
-        inventory = new Inventory();
-        uiinventory.setInventory(inventory);
+        // inventory = new Inventory();
+        // uiinventory.setInventory(inventory);
     }
 
     // Update is called once per frame
@@ -37,10 +37,9 @@ public class PlayerInteract : MonoBehaviour
                     if (Input.GetKeyDown(KeyCode.F))
                     {
                         ItemWorld itemWorld = hitinfo.collider.GetComponent<ItemWorld>();
-                        if (itemWorld != null && inventory.GetItemsList().Count < 2)
+                        if (itemWorld != null && inventoryManager.AddItem(itemWorld.GetItem()))
                         {
                             int viewID = hitinfo.collider.GetComponent<PhotonView>().ViewID;
-                            inventory.addItem(itemWorld.GetItem());
                             interactObj.Interact(viewID);
                         }
                     }

@@ -5,7 +5,7 @@ using TMPro;
 
 public class timer : MonoBehaviour
 {
-    float timeLeft;
+    public float timeLeft;
 
     bool ReadyTimerOn = false;
     bool GameTimerOn = false;
@@ -67,7 +67,38 @@ public class timer : MonoBehaviour
             else
             {
                 GameTimerOn = false;
-                Application.Quit();
+                GameObject[] survivedplayers = GameObject.FindGameObjectsWithTag("Player");
+                foreach (GameObject player in survivedplayers)
+                {
+                    if (player.transform.Find("Canvas") != null)
+                    {
+                        player.transform.Find("Canvas").Find("GameOver").gameObject.SetActive(true);
+                        player.transform.Find("Canvas").Find("Settings").gameObject.SetActive(false);
+                        player.transform.Find("Canvas").Find("Pause").gameObject.SetActive(false);
+                        player.transform.Find("Canvas").GetComponentInChildren<InventoryInput>().enabled = false;
+                        player.GetComponent<PlayerController>().enabled = false;
+                        player.layer = LayerMask.NameToLayer("Item");
+                        player.transform.Find("CameraHolder").Find("Camera").GetComponent<CameraMovement>().enabled = false;
+                        player.transform.Find("CameraHolder").Find("Camera").GetComponent<OpenSettings>().enabled = false;
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true;
+                    }
+                }
+
+                GameObject[] spectators = GameObject.FindGameObjectsWithTag("Spectator");
+                foreach (GameObject spectator in spectators)
+                {
+                    if (spectator.transform.Find("Canvas") != null)
+                    {
+                        spectator.transform.Find("Canvas").Find("TimeOut").gameObject.SetActive(true);
+                        spectator.transform.Find("Canvas").Find("Settings").gameObject.SetActive(false);
+                        spectator.transform.Find("Canvas").Find("Pause").gameObject.SetActive(false);
+                        spectator.transform.GetComponent<SpectatorCameraMovement>().enabled = false;
+                        spectator.transform.GetComponent<SpectatorGetInput>().enabled = false;
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true;
+                    }
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ public class OpenSettings : MonoBehaviour
 {
     [SerializeField] GameObject PauseMenu;
     [SerializeField] GameObject SettingMenu;
+    [SerializeField] InventoryInput inventoryInput;
 
     bool pause_isopen;
     bool setting_isopen;
@@ -44,6 +45,7 @@ public class OpenSettings : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             PauseMenu.SetActive(true);
+            inventoryInput.enabled = false;
         }
         else if (!pause_isopen && !setting_isopen)
         {
@@ -51,6 +53,7 @@ public class OpenSettings : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             PauseMenu.SetActive(false);
+            inventoryInput.enabled = true;
         }
     }
 

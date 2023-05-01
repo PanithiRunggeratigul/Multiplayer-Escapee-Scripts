@@ -5,8 +5,11 @@ using Photon.Pun;
 
 public class PlayerController : MonoBehaviour, ICapturable
 {
-    [SerializeField] float moveSpeed, ground_drag, jumpForce, jumpCooldown, airMultiplier;
+    [SerializeField] float ground_drag, jumpForce, jumpCooldown, airMultiplier;
     bool readyToJump;
+    float buffed_movespeed;
+    float normal_movespeed;
+    public float moveSpeed = 7;
 
     [SerializeField] GameObject ui;
     [SerializeField] GameObject Nameui;
@@ -17,6 +20,12 @@ public class PlayerController : MonoBehaviour, ICapturable
     float currentStamina;
     float staminaCooldown = 1.0f;
     float staminaTimer = 0.0f;
+    float stamina_rate = 0.5f;
+    float normal_rate = 0.5f;
+    float buffed_rate = 0;
+    float effectduration = 5f;
+    float effecttimer = 0f;
+    bool onBuff = false;
     bool running;
     bool moving;
     Vector3 prev_pos;
@@ -78,6 +87,8 @@ public class PlayerController : MonoBehaviour, ICapturable
         running = false;
         moving = false;
         currentStamina = stamina;
+        buffed_movespeed = moveSpeed * 2;
+        normal_movespeed = moveSpeed;
         // inventory = new Inventory();
         // uiinventory.setInventory(inventory);
     }
@@ -172,7 +183,7 @@ public class PlayerController : MonoBehaviour, ICapturable
         StaminaBar.setStamina(currentStamina);
         if (running && moving)
         {
-            currentStamina -= 0.5f;
+            currentStamina -= stamina_rate;
             resetStaminaCooldown();
         }
         else if (!running && staminaTimer <= 1f)
@@ -182,7 +193,7 @@ public class PlayerController : MonoBehaviour, ICapturable
 
         if (!running && currentStamina < 100 && staminaTimer >= staminaCooldown)
         {
-            currentStamina += 0.5f;
+            currentStamina += stamina_rate;
         }
     }
 
@@ -216,6 +227,11 @@ public class PlayerController : MonoBehaviour, ICapturable
         handleStamina();
         checkMoving();
 
+        if (onBuff)
+        {
+            StartEffectTimer();
+        }
+
         if (grounded)
         {
             rb.drag = ground_drag;
@@ -238,5 +254,28 @@ public class PlayerController : MonoBehaviour, ICapturable
     public void Captured()
     {
         playerManager.Die();
+    }
+
+    public void AddBuff()
+    {
+        moveSpeed = buffed_movespeed;
+        currentStamina = stamina;
+        onBuff = true;
+        effecttimer += effectduration;
+        stamina_rate = buffed_rate;
+    }
+
+    void StartEffectTimer()
+    {
+        if (effecttimer >= 0)
+        {
+            effecttimer -= Time.deltaTime;
+        }
+        else
+        {
+            onBuff = false;
+            stamina_rate = normal_rate;
+            moveSpeed = normal_movespeed;
+        }
     }
 }

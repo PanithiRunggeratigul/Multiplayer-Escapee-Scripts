@@ -31,6 +31,6 @@ public class ItemWorldSpawner : MonoBehaviour
         itemW.item = this.item;
 
         SpriteRenderer spriteRenderer = itemW.GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = item.GetSprite();
+        spriteRenderer.sprite = item.image;
     }
 }

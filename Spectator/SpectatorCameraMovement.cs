@@ -6,6 +6,12 @@ using Photon.Pun;
 public class SpectatorCameraMovement : MonoBehaviour
 {
     public GameObject[] Otherplayers;
+    [SerializeField] GameObject gameover;
+    [SerializeField] GameObject PauseMenu;
+    [SerializeField] GameObject SettingMenu;
+    [SerializeField] SpectatorGetInput GetInput;
+    [SerializeField] SpectatorOpenSettings openSettings;
+    [SerializeField] GameObject ui;
 
     public int player_number = 0;
     public string player_name;
@@ -33,6 +39,7 @@ public class SpectatorCameraMovement : MonoBehaviour
             {
                 Destroy(GetComponent<Camera>().gameObject);
             }
+            Destroy(ui);
         }
     }
 
@@ -43,7 +50,17 @@ public class SpectatorCameraMovement : MonoBehaviour
 
         if (Otherplayers.Length == 0)
         {
-            // game over
+            if (PV.IsMine)
+            {
+                gameover.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                SettingMenu.SetActive(false);
+                PauseMenu.SetActive(false);
+                GetInput.enabled = false;
+                openSettings.enabled = false;
+                GameObject.Find("Canvas").transform.Find("Timer").GetComponent<timer>().enabled = false;
+            }
         }
         else if (Otherplayers.Length > 0)
         {
