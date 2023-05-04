@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.IO;
 
 public class Bomb : MonoBehaviour
 {
@@ -12,13 +13,18 @@ public class Bomb : MonoBehaviour
     float explosionRadius = 6;
 
     float timeduration;
+    GameObject explosion;
+    GameObject particle;
+
+    int particleID;
+    int explosionID;
 
     [SerializeField] PhotonView PV;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        timeduration = 3f;
+        timeduration = 5f;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -54,6 +60,7 @@ public class Bomb : MonoBehaviour
         if (player != null)
         {
             player.gameObject.GetComponent<PlayerController>().enabled = true;
+
             Destroy(gameObject);
         }
     }
@@ -65,18 +72,47 @@ public class Bomb : MonoBehaviour
         yield return new WaitForSeconds(timeduration);
 
         enemy.gameObject.GetComponent<EnemyController>().enabled = true;
+
         Destroy(gameObject);
     }
 
     IEnumerator NotHit()
     {
         yield return new WaitForSeconds(timeduration);
+        
         Destroy(gameObject);
+    }
+
+    IEnumerator DestroyParticles()
+    {
+        yield return new WaitForSeconds(timeduration);
+
+        if (particle.GetComponent<PhotonView>().IsMine)
+        {
+            PhotonNetwork.Destroy(particle);
+        }
+        if (explosion.GetComponent<PhotonView>().IsMine)
+        {
+            PhotonNetwork.Destroy(explosion);
+        }
     }
 
     void Explode()
     {
-        GetComponent<MeshRenderer>().enabled = false;
+        if (PV.IsMine)
+        {
+            explosion = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "ExplosionParticle"), transform.position, Quaternion.identity);
+            particle = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Particle"), transform.position, Quaternion.identity);
+
+            StartCoroutine(DestroyParticles());
+        }
+
+        Component[] meshes = GetComponentsInChildren<MeshRenderer>();
+        foreach (Component mesh in meshes)
+        {
+            mesh.GetComponent<MeshRenderer>().enabled = false;
+        }
+
         GetComponent<SphereCollider>().enabled = false;
 
         Collider[] objectsInRange = Physics.OverlapSphere(transform.position, explosionRadius);
@@ -98,5 +134,11 @@ public class Bomb : MonoBehaviour
                 StartCoroutine(NotHit());
             }
         }
+    }
+
+    [PunRPC]
+    void Remove_Item(GameObject particle)
+    {
+        PhotonNetwork.Destroy(particle);
     }
 }

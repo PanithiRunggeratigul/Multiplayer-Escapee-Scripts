@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour, ICapturable
     [SerializeField] LayerMask Ground;
     bool grounded;
 
+    [Header("Animation")]
+    [SerializeField] Animator animator;
+
     // [Header("Inventory")]
     // private Inventory inventory;
     // [SerializeField] UI_Inventory uiinventory;
@@ -114,6 +117,7 @@ public class PlayerController : MonoBehaviour, ICapturable
     {
         // movement direction need to match with orientation, handle z and x axis movement together
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        animator.SetFloat("Running", Mathf.Abs(verticalInput) + Mathf.Abs(horizontalInput));
 
         // sprint and move
         running = false;
@@ -234,10 +238,12 @@ public class PlayerController : MonoBehaviour, ICapturable
 
         if (grounded)
         {
+            animator.SetBool("IsJumping", false);
             rb.drag = ground_drag;
         }
         else
         {
+            animator.SetBool("IsJumping", true);
             rb.drag = 0;
         }
     }
