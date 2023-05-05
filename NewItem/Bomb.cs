@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using UnityEngine.AI;
 
 public class Bomb : MonoBehaviour
 {
@@ -15,9 +16,6 @@ public class Bomb : MonoBehaviour
     float timeduration;
     GameObject explosion;
     GameObject particle;
-
-    int particleID;
-    int explosionID;
 
     [SerializeField] PhotonView PV;
 
@@ -40,8 +38,6 @@ public class Bomb : MonoBehaviour
 
         rb.isKinematic = true;
 
-        //transform.SetParent(collision.transform);
-
         Explode();
     }
 
@@ -51,36 +47,43 @@ public class Bomb : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 
-    IEnumerator StopPlayer(Collider player)
+    IEnumerator HitObj(Collider objecthit)
     {
-        player.gameObject.GetComponent<PlayerController>().enabled = false;
-
-        yield return new WaitForSeconds(timeduration);
-
-        if (player != null)
+        if (objecthit.gameObject.GetComponent<PlayerController>() != null || objecthit.gameObject.GetComponent<EnemyController>() != null)
         {
-            player.gameObject.GetComponent<PlayerController>().enabled = true;
-
-            Destroy(gameObject);
+            if (objecthit.gameObject.GetComponent<PlayerController>() != null)
+            {
+                objecthit.gameObject.GetComponent<PlayerController>().enabled = false;
+                Animator playerAnimator = objecthit.gameObject.GetComponentInChildren<Animator>();
+                playerAnimator.SetFloat("Running", 0);
+            }
+            if (objecthit.gameObject.GetComponent<EnemyController>() != null)
+            {
+                objecthit.gameObject.GetComponent<EnemyController>().enabled = false;
+                objecthit.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+            }
         }
-    }
-
-    IEnumerator StopEnemy(Collider enemy)
-    {
-        enemy.gameObject.GetComponent<EnemyController>().enabled = false;
 
         yield return new WaitForSeconds(timeduration);
 
-        enemy.gameObject.GetComponent<EnemyController>().enabled = true;
-
+        if (objecthit.gameObject.GetComponent<PlayerController>() != null || objecthit.gameObject.GetComponent<EnemyController>() != null)
+        {
+            if (objecthit.gameObject.GetComponent<PlayerController>() != null)
+            {
+                if (objecthit != null)
+                {
+                    objecthit.gameObject.GetComponent<PlayerController>().enabled = true;
+                }
+            }
+            if (objecthit.gameObject.GetComponent<EnemyController>() != null)
+            {
+                objecthit.gameObject.GetComponent<EnemyController>().enabled = true;
+                objecthit.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            }
+        }
         Destroy(gameObject);
-    }
 
-    IEnumerator NotHit()
-    {
-        yield return new WaitForSeconds(timeduration);
-        
-        Destroy(gameObject);
+
     }
 
     IEnumerator DestroyParticles()
@@ -118,27 +121,7 @@ public class Bomb : MonoBehaviour
         Collider[] objectsInRange = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (Collider objecthit in objectsInRange) {
-            if (objecthit.gameObject.GetComponent<PlayerController>() != null || objecthit.gameObject.GetComponent<EnemyController>() != null)
-            {
-                if (objecthit.gameObject.GetComponent<PlayerController>() != null)
-                {
-                    StartCoroutine(StopPlayer(objecthit));
-                }
-                if (objecthit.gameObject.GetComponent<EnemyController>() != null)
-                {
-                    StartCoroutine(StopEnemy(objecthit));
-                }
-            }
-            else if (objecthit.gameObject.GetComponent<PlayerController>() == null && objecthit.gameObject.GetComponent<EnemyController>() == null)
-            {
-                StartCoroutine(NotHit());
-            }
+            StartCoroutine(HitObj(objecthit));
         }
-    }
-
-    [PunRPC]
-    void Remove_Item(GameObject particle)
-    {
-        PhotonNetwork.Destroy(particle);
     }
 }
