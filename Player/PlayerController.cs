@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour, ICapturable
     float currentStamina;
     float staminaCooldown = 1.0f;
     float staminaTimer = 0.0f;
-    float stamina_rate = 0.5f;
-    float normal_rate = 0.5f;
+    float stamina_rate = 0.1f;
+    float normal_rate = 0.1f;
     float buffed_rate = 0;
     float effectduration = 5f;
     float effecttimer = 0f;
@@ -228,8 +228,8 @@ public class PlayerController : MonoBehaviour, ICapturable
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, Ground);
         MyInput();
         speedControl();
-        handleStamina();
         checkMoving();
+        handleStamina();
 
         if (onBuff)
         {

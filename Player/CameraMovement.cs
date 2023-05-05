@@ -19,6 +19,12 @@ public class CameraMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (sensitivity <= 50)
+        {
+            sensitivity = 50;
+            PlayerPrefs.SetFloat("currentSensitivity", sensitivity);
+        }
+
         sensitivity = PlayerPrefs.GetFloat("currentSensitivity");
         slider.value = sensitivity;
         Cursor.lockState = CursorLockMode.Locked;
