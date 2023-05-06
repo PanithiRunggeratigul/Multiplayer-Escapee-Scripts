@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class SpectatorOpenSettings : MonoBehaviour
 {
     [SerializeField] GameObject PauseMenu;
     [SerializeField] GameObject SettingMenu;
     [SerializeField] SpectatorGetInput GetInput;
+    [SerializeField] PhotonView PV;
 
     bool pause_isopen;
     bool setting_isopen;
@@ -19,6 +21,11 @@ public class SpectatorOpenSettings : MonoBehaviour
 
     void Update()
     {
+        if (!PV.IsMine)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (setting_isopen && pause_isopen)

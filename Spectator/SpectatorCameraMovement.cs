@@ -16,7 +16,7 @@ public class SpectatorCameraMovement : MonoBehaviour
     public int player_number = 0;
     public string player_name;
 
-    public int prev_player_number = 0;
+    public int prev_player_number = -1;
 
     PhotonView PV;
 
@@ -64,17 +64,27 @@ public class SpectatorCameraMovement : MonoBehaviour
         }
         else if (Otherplayers.Length > 0)
         {
-            transform.position = Otherplayers[player_number].gameObject.transform.Find("orientation").transform.position;
-            transform.rotation = Otherplayers[player_number].gameObject.transform.Find("CameraHolder").transform.rotation;
-
-
             if (PV.IsMine)
             {
-                Otherplayers[player_number].gameObject.transform.Find("NameCanvas").gameObject.SetActive(false);
-                Otherplayers[prev_player_number].gameObject.transform.Find("NameCanvas").gameObject.SetActive(true);
-            }
+                try
+                {
+                    transform.position = Otherplayers[player_number].gameObject.transform.Find("orientation").transform.position;
+                    transform.rotation = Otherplayers[player_number].gameObject.transform.Find("CameraHolder").transform.rotation;
 
-            player_name = Otherplayers[player_number].gameObject.GetComponent<PhotonView>().Owner.NickName;
+                    Otherplayers[player_number].gameObject.transform.Find("NameCanvas").gameObject.SetActive(false);
+
+                    if (prev_player_number != -1 && Otherplayers.Length > 1)
+                    {
+                        Otherplayers[prev_player_number].gameObject.transform.Find("NameCanvas").gameObject.SetActive(true);
+                    }
+
+                    player_name = Otherplayers[player_number].gameObject.GetComponent<PhotonView>().Owner.NickName;
+                }
+                catch (System.IndexOutOfRangeException e)
+                {
+                    print(e);
+                }
+            }
         }
     }
 }
