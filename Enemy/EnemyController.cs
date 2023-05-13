@@ -12,17 +12,14 @@ public class EnemyController : MonoBehaviour
 {
     public NavMeshAgent agent;
 
-    Transform player;
+    float mindist = Mathf.Infinity;
+    Transform playerMin = null;
 
     public LayerMask Ground, Player;
 
     public Vector3 walkPoint;
     bool walkPointSet;
     public float walkPointRange;
-
-    public float timeBetweenAttacks;
-    bool alreadyAttacked;
-    // public GameObject projectile;
 
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
@@ -62,15 +59,11 @@ public class EnemyController : MonoBehaviour
             walkPointSet = true;
         }
     }
-    private void ChasePlayer()
+    private void ChasePlayer(Transform player)
     {
         agent.SetDestination(player.position);
     }
 
-    private void ResetAttack()
-    {
-        alreadyAttacked = false;
-    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -79,16 +72,9 @@ public class EnemyController : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, Player);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, Player);
 
@@ -104,11 +90,25 @@ public class EnemyController : MonoBehaviour
         }
         if (!playerInAttackRange && playerInSightRange)
         {
-            ChasePlayer();
-        }
-        if (playerInAttackRange && playerInSightRange)
-        {
-            // Debug.Log("captured");
+            Collider[] playersInRange = Physics.OverlapSphere(transform.position, sightRange, Player);
+
+            foreach (Collider player in playersInRange)
+            {
+                float dist = Vector3.Distance(player.transform.position, transform.position);
+                if (dist < mindist)
+                {
+                    playerMin = player.transform;
+                    mindist = dist;
+                }
+            }
+            if (playerMin != null)
+            {
+                ChasePlayer(playerMin);
+            }
+            else if (playerMin == null)
+            {
+                mindist = Mathf.Infinity;
+            }
         }
     }
 }
