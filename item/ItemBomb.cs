@@ -16,8 +16,7 @@ public class ItemBomb : MonoBehaviour, IUsable
 
     PhotonView PV;
 
-
-
+    // for bomb, instantiate and add force to the bomb to throw it forward
     public void UseItem()
     {
         attackPoint = GameObject.Find("attackpoint").transform;

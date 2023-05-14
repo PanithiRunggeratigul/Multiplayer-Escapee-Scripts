@@ -22,11 +22,13 @@ public class SpectatorGetInput : MonoBehaviour
             return;
         }
 
+        // left click move to next player
         if (Input.GetMouseButtonDown(0))
         {
             cam.player_number += 1;
             cam.prev_player_number = cam.player_number - 1;
 
+            // reset to avoid index out of range
             if (cam.player_number >= cam.Otherplayers.Length)
             {
                 cam.player_number = 0;
@@ -37,11 +39,13 @@ public class SpectatorGetInput : MonoBehaviour
             }
         }
 
+        // right click move to player before
         if (Input.GetMouseButtonDown(1))
         {
             cam.player_number -= 1;
             cam.prev_player_number = cam.player_number + 1;
 
+            // reset to avoid index out of range
             if (cam.player_number < 0)
             {
                 cam.player_number = cam.Otherplayers.Length-1;

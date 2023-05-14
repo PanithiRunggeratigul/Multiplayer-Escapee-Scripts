@@ -1,29 +1,16 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-//[Serializable]
-//public class Item
-//{
-//    public enum ItemType
-//    {
-//        dude,
-//        white,
-//    }
-
-//    public ItemType itemType;
-//    public int amount;
-
-//    public Sprite GetSprite()
-//    {
-//        switch (itemType)
-//        {
-//            default:
-//            case ItemType.dude:
-//                return itemAssets.Instance.dudeSprite;
-//            case ItemType.white:
-//                return itemAssets.Instance.whiteSprite;
-//        }
-//    }
-//}
+[CreateAssetMenu(menuName = "Scriptable object/items")]
+public class Item : ScriptableObject
+{
+    public Sprite image;
+    public ItemType type;
+    
+    public enum ItemType
+    {
+        potion,
+        bomb,
+    }
+}

@@ -6,19 +6,21 @@ using System.IO;
 
 public class ItemWorldSpawner : MonoBehaviour
 {
-    public Item item;
+    public Item item;   // use with scriptable object
     [SerializeField] PhotonView PV;
     private SpriteRenderer spriteRenderer;
 
     private void Start()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)   // to instantiate object once
         {
             GameObject obj = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "pfItemWorld"), transform.position, Quaternion.identity);
 
+            // change the item respect to the scriptable object
             int itemID = obj.GetComponent<PhotonView>().ViewID;
 
-            PV.RPC("Change_Item", RpcTarget.All, itemID);
+            PV.RPC("Change_Item", RpcTarget.All, itemID);   // use RPC to tells all the player that item is changes
+                                                            // if not use RPC, other player except master will not see the changed item
         }
     }
 

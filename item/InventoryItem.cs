@@ -19,6 +19,7 @@ public class InventoryItem : MonoBehaviour
         item = newItem;
         image.sprite = newItem.image;
 
+        // add script according to the item that picked up
         if (item.type == Item.ItemType.potion)
         {
             gameObject.AddComponent<ItemPotion>();

@@ -12,7 +12,7 @@ public class EnemySpawner : MonoBehaviour
     {
         if (PV.IsMine)
         {
-            InvokeRepeating("CreateController", 10, 60);
+            InvokeRepeating("CreateController", 10, 60);    // spawn enemy every minute after 10 seconds of prepare time
         }
     }
 

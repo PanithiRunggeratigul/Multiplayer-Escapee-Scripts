@@ -43,10 +43,7 @@ public class PlayerController : MonoBehaviour, ICapturable
     [Header("Animation")]
     [SerializeField] Animator animator;
 
-    // [Header("Inventory")]
-    // private Inventory inventory;
-    // [SerializeField] UI_Inventory uiinventory;
-
+    [Header("Camera")]
     [SerializeField] Transform orientation;
 
     float horizontalInput;
@@ -74,7 +71,7 @@ public class PlayerController : MonoBehaviour, ICapturable
         {
             
         }
-        else if (!PV.IsMine)
+        else if (!PV.IsMine)    // to avoid the conflict from other players
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
             if (GetComponent<Camera>() != null)
@@ -92,8 +89,6 @@ public class PlayerController : MonoBehaviour, ICapturable
         currentStamina = stamina;
         buffed_movespeed = moveSpeed * 2;
         normal_movespeed = moveSpeed;
-        // inventory = new Inventory();
-        // uiinventory.setInventory(inventory);
     }
 
     private void MyInput()
@@ -187,17 +182,17 @@ public class PlayerController : MonoBehaviour, ICapturable
         StaminaBar.setStamina(currentStamina);
         if (running && moving)
         {
-            currentStamina -= stamina_rate;
+            currentStamina -= stamina_rate; // decrease stamina while running and moving
             resetStaminaCooldown();
         }
         else if (!running && staminaTimer <= 1f)
         {
-            staminaTimer += Time.deltaTime;
+            staminaTimer += Time.deltaTime; // a timer that will count when player is not running
         }
 
         if (!running && currentStamina < 100 && staminaTimer >= staminaCooldown)
         {
-            currentStamina += stamina_rate;
+            currentStamina += stamina_rate; // increase stamina when not running and timer ended
         }
     }
 
@@ -259,9 +254,10 @@ public class PlayerController : MonoBehaviour, ICapturable
 
     public void Captured()
     {
-        playerManager.Die();
+        playerManager.Die();    // use with ICapturable interface
     }
 
+    // when potion used, make stamina decrease rate to 0 until timer end
     public void AddBuff()
     {
         moveSpeed = buffed_movespeed;

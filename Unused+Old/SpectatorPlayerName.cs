@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpectatorPlayerName : MonoBehaviour
 {
+    // can use with player_name in the SpectatorCameraMovement Script
     [SerializeField] SpectatorCameraMovement cam;
 
     // Start is called before the first frame update

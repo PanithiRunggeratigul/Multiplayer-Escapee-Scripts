@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DisplayDescription : MonoBehaviour
 {
+    // show description to the player that is looking to the item
     [SerializeField] GameObject description;
     public void IsFacing()
     {

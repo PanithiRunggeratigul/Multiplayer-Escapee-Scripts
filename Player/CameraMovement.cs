@@ -34,21 +34,25 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerPrefs.SetFloat("currentSensitivity", sensitivity);
+        PlayerPrefs.SetFloat("currentSensitivity", sensitivity);    // set the sensitivity to PlayerPrefs
 
+        // mouse input
         float mouseX = Input.GetAxisRaw("Mouse X") * multiplier * sensitivity;
         float mouseY = Input.GetAxisRaw("Mouse Y") * multiplier * sensitivity;
 
+        // these are the wa unity handle mouse input with 3D rotation
         yRotation += mouseX;
         xRotation -= mouseY;
 
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);  // limit x rotation to not goes over player
 
+        // rotate cam, orientation, and player model 
         cam.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.transform.rotation = Quaternion.Euler(0, yRotation, 0);
         sprite.transform.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
+    // set sensitivity from the settings
     public void ChangeSensitivity(float newMouseSens)
     {
         sensitivity = newMouseSens;

@@ -25,6 +25,7 @@ public class Bomb : MonoBehaviour
         timeduration = 5f;
     }
 
+    // stop the bomb movement and explode when the collider touch any other collider
     private void OnCollisionEnter(Collision collision)
     {
         if (targetHit)
@@ -41,14 +42,17 @@ public class Bomb : MonoBehaviour
         Explode();
     }
 
+    // draw explosion range in the editor
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 
+    // using IEnumerator because return WaitForSeconds for the bomb effect duration
     IEnumerator HitObj(Collider objecthit)
     {
+        // disable the controller scripts when hit player or enemy
         if (objecthit.gameObject.GetComponent<PlayerController>() != null || objecthit.gameObject.GetComponent<EnemyController>() != null)
         {
             if (objecthit.gameObject.GetComponent<PlayerController>() != null)
@@ -64,13 +68,14 @@ public class Bomb : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(timeduration);
+        yield return new WaitForSeconds(timeduration);  // wait for timeduration (5 seconds)
 
+        // enable the movement back
         if (objecthit.gameObject.GetComponent<PlayerController>() != null || objecthit.gameObject.GetComponent<EnemyController>() != null)
         {
             if (objecthit.gameObject.GetComponent<PlayerController>() != null)
             {
-                if (objecthit != null)
+                if (objecthit != null)  // handle error when there is player quit while getting hit by the bomb
                 {
                     objecthit.gameObject.GetComponent<PlayerController>().enabled = true;
                 }
@@ -81,15 +86,15 @@ public class Bomb : MonoBehaviour
                 objecthit.gameObject.GetComponent<NavMeshAgent>().enabled = true;
             }
         }
-        Destroy(gameObject);
-
-
+        Destroy(gameObject);    // destroy the bomb
     }
 
+    // set a time to destroy the particles
     IEnumerator DestroyParticles()
     {
         yield return new WaitForSeconds(timeduration);
 
+        // since the particle and explosion do not have the same PhotonView as the bomb, they must be destroy by this way
         if (particle.GetComponent<PhotonView>().IsMine)
         {
             PhotonNetwork.Destroy(particle);
@@ -102,7 +107,7 @@ public class Bomb : MonoBehaviour
 
     void Explode()
     {
-        if (PV.IsMine)
+        if (PV.IsMine)  // to instantiate and destroy once
         {
             explosion = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "ExplosionParticle"), transform.position, Quaternion.identity);
             particle = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Particle"), transform.position, Quaternion.identity);
@@ -113,7 +118,7 @@ public class Bomb : MonoBehaviour
         Component[] meshes = GetComponentsInChildren<MeshRenderer>();
         foreach (Component mesh in meshes)
         {
-            mesh.GetComponent<MeshRenderer>().enabled = false;
+            mesh.GetComponent<MeshRenderer>().enabled = false;  // hide the bomb before destroy itself after Coroutine end
         }
 
         GetComponent<SphereCollider>().enabled = false;
@@ -121,7 +126,7 @@ public class Bomb : MonoBehaviour
         Collider[] objectsInRange = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (Collider objecthit in objectsInRange) {
-            StartCoroutine(HitObj(objecthit));
+            StartCoroutine(HitObj(objecthit));  // StartCoroutine to start the 5 seconds timer
         }
     }
 }

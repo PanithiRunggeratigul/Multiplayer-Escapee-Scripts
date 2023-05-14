@@ -12,9 +12,11 @@ public class EnemyController : MonoBehaviour
 {
     public NavMeshAgent agent;
 
+    // for finding closest player
     float mindist = Mathf.Infinity;
     Transform playerMin = null;
 
+    // for navigation
     public LayerMask Ground, Player;
 
     public Vector3 walkPoint;
@@ -29,6 +31,7 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
+    // walk to the point randomly
     private void Patrolling()
     {
         if (!walkPointSet)
@@ -59,11 +62,14 @@ public class EnemyController : MonoBehaviour
             walkPointSet = true;
         }
     }
+
+    // walk to the closest player
     private void ChasePlayer(Transform player)
     {
         agent.SetDestination(player.position);
     }
 
+    // draw sightRange and attackRange in the editor
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -78,6 +84,7 @@ public class EnemyController : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, Player);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, Player);
 
+        // capture any player in the attackRange using interface Capturable
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange, Player);
         foreach (Collider hitCollider in hitColliders)
         {
@@ -90,6 +97,7 @@ public class EnemyController : MonoBehaviour
         }
         if (!playerInAttackRange && playerInSightRange)
         {
+            // find the closest player in the sightRange and chase that player
             Collider[] playersInRange = Physics.OverlapSphere(transform.position, sightRange, Player);
 
             foreach (Collider player in playersInRange)

@@ -9,6 +9,6 @@ public class ItemRotate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        sprite.transform.Rotate(0, -0.5f, 0);
+        sprite.transform.Rotate(0, -0.5f, 0);   // rotate the item
     }
 }

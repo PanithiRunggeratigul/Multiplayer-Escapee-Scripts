@@ -23,11 +23,13 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    // instantiate player
     void CreateController()
     {
         controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), Vector3.zero, Quaternion.identity, 0, new object[] { PV.ViewID });
     }
 
+    // destroy player and instantiate spectator camera
     public void Die()
     {
         if (PV.IsMine)

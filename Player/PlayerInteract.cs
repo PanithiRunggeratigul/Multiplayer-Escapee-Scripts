@@ -24,7 +24,7 @@ public class PlayerInteract : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray r = new Ray(interactSource.position, interactSource.forward);
+        Ray r = new Ray(interactSource.position, interactSource.forward);                           // ray to detect item in the range
         if (Physics.Raycast(r, out RaycastHit hitinfo, interactDistance, item))
         {
             description = hitinfo.collider.GetComponent<DisplayDescription>();
@@ -34,6 +34,7 @@ public class PlayerInteract : MonoBehaviour
                 description.IsFacing();
                 if (hitinfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
+                    // add item into the inventory and destroy item
                     if (Input.GetKeyDown(KeyCode.F))
                     {
                         ItemWorld itemWorld = hitinfo.collider.GetComponent<ItemWorld>();

@@ -53,7 +53,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             return;
         }
-        RoomOptions roomOptions = new RoomOptions();
+        RoomOptions roomOptions = new RoomOptions();    // limit number of player to 5 in a room
         roomOptions.MaxPlayers = 5;
 
         PhotonNetwork.CreateRoom(roomNameInputField.text, roomOptions, null);

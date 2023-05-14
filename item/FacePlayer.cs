@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FacePlayer : MonoBehaviour
 {
+    // make desciption face the player
     private GameObject cam;
 
     // Start is called before the first frame update
